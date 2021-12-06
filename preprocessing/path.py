@@ -6,7 +6,7 @@ class Path:
         """Get filename"""
         return prefix + os.path.basename(img_path)
 
-    def output(self, img_path, prefix=""):
+    def output_img(self, img_path, prefix=""):
         """
         Add a prefix in your output images. They will be placed in the same folder as the original ones
         If no prefix is given, the image will keep the same name as the original.

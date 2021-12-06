@@ -35,7 +35,7 @@ class Registration(Path):
 
     def output(self):
         """Image output"""
-        moving_img = self.output(self.moving_img, "r")
+        moving_img = self.output_img(self.moving_img, "r")
         return sitk.WriteImage(elastix_image_filter.GetResultImage(), moving_img)
 
     def remove_files(self) -> None:
