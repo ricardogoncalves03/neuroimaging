@@ -17,7 +17,7 @@ class N4Correction(Path):
         self.img = img
         self.mask = mask
 
-    def output(self) -> sitk.WriteImage:
+    def output(self) -> any:
         """Image output"""
         tup = self.cast(self.img, self.mask)
         img = tup[0]
