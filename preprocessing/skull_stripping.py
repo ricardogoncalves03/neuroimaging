@@ -1,12 +1,12 @@
 import subprocess
 from preprocessing.path import Path
-from colorama import Fore
 
 
 class SkullStripping(Path):
     """
     Skull stripping using ROBEX tool - https://www.nitrc.org/projects/robex
     """
+
     def __init__(self, img: str, robex_path: str):
         """
         Initializes a skull stripping object, where `img_path` is the path to the NIfTI image,
@@ -17,13 +17,12 @@ class SkullStripping(Path):
 
     def start(self) -> None:
         """Start skull stripping process"""
-        if self.img.endswith(".nii") or self.img.endswith(".nii.gz") \
-                and self.robex_path.endswith("runROBEX.sh"):
-            ss_img = self.output_img(self.img, "ss_")
-            print(ss_img)
-            mask_img = self.output_img(self.img, "mask_")
-            print(mask_img)
-            subprocess.call([self.robex_path, self.img, ss_img, mask_img])
-        else:
-            print(Fore.RED + "The parameters you provided are incorrect. The image must be in a .nii or .nii.gz "
+        if not (self.img.endswith(".nii") or self.img.endswith(".nii.gz")
+                and self.robex_path.endswith("runROBEX.sh")):
+            raise ValueError("The parameters you provided are incorrect. The image must be in a .nii or .nii.gz "
                              "format. Also, make sure the ROBEX file is runROBEX.sh")
+        ss_img = self.output_img(self.img, "ss_")
+        print(ss_img)
+        mask_img = self.output_img(self.img, "mask_")
+        print(mask_img)
+        subprocess.call([self.robex_path, self.img, ss_img, mask_img])

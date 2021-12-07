@@ -1,7 +1,6 @@
 import os
 import SimpleITK as sitk
 from preprocessing.path import Path
-from colorama import Fore
 
 
 class Registration(Path):
@@ -31,32 +30,27 @@ class Registration(Path):
         """
         Rigid registration.
         """
-        if self.is_img_nii():
-            Registration.elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
-            Registration.elastix_image_filter.SetMovingImage(sitk.ReadImage(self.moving_img))
-            Registration.elastix_image_filter.SetParameterMap(sitk.GetDefaultParameterMap("rigid"))
-            Registration.elastix_image_filter.Execute()
-            sitk.WriteImage(Registration.elastix_image_filter.GetResultImage(), Registration.TEMP_IMG)
-        else:
-            print(Fore.RED + "The parameters you provided are incorrect. The images must be in a .nii or .nii.gz "
+        if not self.is_img_nii():
+            raise ValueError("The parameters you provided are incorrect. The images must be in a .nii or .nii.gz "
                              "format.")
+        Registration.elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
+        Registration.elastix_image_filter.SetMovingImage(sitk.ReadImage(self.moving_img))
+        Registration.elastix_image_filter.SetParameterMap(sitk.GetDefaultParameterMap("rigid"))
+        Registration.elastix_image_filter.Execute()
+        sitk.WriteImage(Registration.elastix_image_filter.GetResultImage(), Registration.TEMP_IMG)
 
     def affine_registration(self) -> None:
         """
-        Affine registration. Should be used after the rigid registration to improve results.
+        Affine registration. Must be used after the rigid registration to improve results.
         """
-        if self.is_img_nii():
-            Registration.elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
-            Registration.elastix_image_filter.SetMovingImage(sitk.ReadImage(Registration.TEMP_IMG))
-            transformation_map = sitk.GetDefaultParameterMap("affine")
-            transformation_map['FinalBSplineInterpolationOrder'] = ['0']
-            Registration.elastix_image_filter.SetParameterMap(transformation_map)
-            Registration.elastix_image_filter.Execute()
-        else:
-            print(Fore.RED + "The parameters you provided are incorrect. The images must be in a .nii or .nii.gz "
-                             "format.")
+        Registration.elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
+        Registration.elastix_image_filter.SetMovingImage(sitk.ReadImage(Registration.TEMP_IMG))
+        transformation_map = sitk.GetDefaultParameterMap("affine")
+        transformation_map['FinalBSplineInterpolationOrder'] = ['0']
+        Registration.elastix_image_filter.SetParameterMap(transformation_map)
+        Registration.elastix_image_filter.Execute()
 
-    def output(self) -> sitk.WriteImage:
+    def output(self) -> any:
         """Image output"""
         return self.output_img(self.moving_img, "r")
 

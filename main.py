@@ -1,6 +1,6 @@
 from preprocessing.n4_correction import N4Correction
 # from preprocessing.registration import Registration
-# from preprocessing.skull_stripping import SkullStripping
+from preprocessing.skull_stripping import SkullStripping
 
 
 def main():
@@ -19,7 +19,8 @@ def main():
     ss = SkullStripping(img, robex)
     ss.start()
     ###
-    """
+"""
+
 
     ### N4 filter
     img = "/home/ricardo/Documents/neuroImaging-tests/preprocessing/test_n4/ss_flair.nii.gz"
@@ -27,6 +28,8 @@ def main():
     n4 = N4Correction(img, mask)
     # n4.cast()
     n4.output()
+    ###
+
 
 
 if __name__ == '__main__':

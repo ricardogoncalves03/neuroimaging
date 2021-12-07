@@ -27,7 +27,7 @@ class N4Correction(Path):
         print("**N4 applied successfully**")
         return sitk.WriteImage(n4_img, self.output_img(self.img, "n4_"))
 
-    def cast(self, read_img, read_mask) -> Tuple[any, any]:
+    def cast(self, read_img: str, read_mask: str) -> Tuple[any, any]:
         """
         Read and cast images to the right format
         """
