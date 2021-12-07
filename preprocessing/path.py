@@ -2,7 +2,8 @@ import os
 
 
 class Path:
-    def get_filename(self, img_path, prefix="") -> str:
+    @staticmethod
+    def get_filename(img_path, prefix="") -> str:
         """Get filename"""
         return prefix + os.path.basename(img_path)
 
