@@ -2,6 +2,7 @@ import os
 
 
 class Path:
+    """Superclass responsible for path management and file renaming"""
     @staticmethod
     def __get_filename(img_path, prefix="") -> str:
         """Get filename"""

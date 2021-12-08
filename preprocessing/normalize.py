@@ -1,11 +1,9 @@
-import numpy as np
 import nibabel as nib
-from numpy import ndarray
-from numpy.ma import MaskedArray
+import numpy as np
 from skimage.measure import label, regionprops
-
 from preprocessing.path import Path
 
+# MODULE TO BE DELETED. JUST FOR TESTING PURPOSES
 
 class Normalize(Path):
     """Class to normalize NIfTI images according to Qtim deep learning tutorial.
@@ -23,9 +21,9 @@ class Normalize(Path):
     def _start(self):
         nii = nib.load(self.img)
         nii_matrix = nii.get_data()
-        nii_copy = np.copy(nii_matrix)
+        # nii_copy = np.copy(nii_matrix)
 
-        label_image = label(nii_copy)
+        label_image = label(nii_matrix == 0)
         largest_label, largest_area = None, 0
         for region in regionprops(label_image):
             if region.area > largest_area:
@@ -33,11 +31,11 @@ class Normalize(Path):
                 largest_label = region.label
 
         mask = label_image == largest_label
-        masked_nii = np.ma.masked_where(mask, nii_copy)
+        masked_nii = np.ma.masked_where(mask, nii_matrix)
         masked_nii = masked_nii - np.mean(masked_nii)
         masked_nii = masked_nii / np.std(masked_nii)
         masked_nii = np.ma.getdata(masked_nii)
 
         nii_matrix[:, :, :] = masked_nii
 
-        nii.to_filename(self._output_img(self.img, "norm_"))
+        nii.to_filename("/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_ss/a012/AAAA.nii")

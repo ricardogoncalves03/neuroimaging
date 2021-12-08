@@ -26,5 +26,6 @@ class SkullStripping(Path):
         return ss_img, mask_img
 
     def __nii_and_robex(self) -> bool:
+        """Checks if we are providing the right inputs"""
         return self.img.endswith(".nii") or self.img.endswith(".nii.gz") and \
-               self.robex_path.endswith("runROBEX.sh")
+            self.robex_path.endswith("runROBEX.sh")

@@ -37,7 +37,7 @@
                                 <a class="function" href="#SkullStripping.__init__">SkullStripping</a>
                         </li>
                         <li>
-                                <a class="function" href="#SkullStripping.start">start</a>
+                                <a class="function" href="#SkullStripping.output">output</a>
                         </li>
                 </ul>
 
@@ -61,36 +61,38 @@
                 
                         <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">os.path</span>
-<span class="kn">import</span> <span class="nn">subprocess</span>
+            <div class="codehilite"><pre><span></span><span class="kn">import</span> <span class="nn">subprocess</span>
+<span class="kn">from</span> <span class="nn">typing</span> <span class="kn">import</span> <span class="n">Tuple</span>
+<span class="kn">from</span> <span class="nn">preprocessing.path</span> <span class="kn">import</span> <span class="n">Path</span>
 
 
-<span class="k">class</span> <span class="nc">SkullStripping</span><span class="p">:</span>
+<span class="k">class</span> <span class="nc">SkullStripping</span><span class="p">(</span><span class="n">Path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Skull stripping with ROBEX tool - https://www.nitrc.org/projects/robex.</span>
+<span class="sd">    Skull stripping using ROBEX tool - https://www.nitrc.org/projects/robex</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">robex_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">robex_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes a skull stripping object, where `img_path` is the path to the NIfTI image,</span>
 <span class="sd">        and `robex_path` is the path to the file runROBEX.sh</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">img_path</span> <span class="o">=</span> <span class="n">img_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">img</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span> <span class="o">=</span> <span class="n">robex_path</span>
 
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Start skull stripping process&quot;&quot;&quot;</span>
-        <span class="n">path_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">)</span>
-        <span class="c1">#: Get path without the filename</span>
-        <span class="n">img_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">)</span>
-        <span class="c1">#: Extract filename from the path</span>
-        <span class="n">img_out</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ss_&quot;</span> <span class="o">+</span> <span class="n">img_name</span>
-        <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_name</span><span class="p">,</span> <span class="n">img_out</span><span class="p">)</span>
-        <span class="n">img_mask_out</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mask_&quot;</span> <span class="o">+</span> <span class="n">img_name</span>
-        <span class="n">img_mask_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_name</span><span class="p">,</span> <span class="n">img_mask_out</span><span class="p">)</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">,</span> <span class="n">img_path</span><span class="p">,</span> <span class="n">img_mask_path</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nii_and_robex</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The parameters you provided are incorrect. The image must be in a .nii or .nii.gz &quot;</span>
+                             <span class="s2">&quot;format. Also, make sure the ROBEX file is runROBEX.sh&quot;</span><span class="p">)</span>
+        <span class="n">ss_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;ss_&quot;</span><span class="p">)</span>
+        <span class="n">mask_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;mask_&quot;</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="n">ss_img</span><span class="p">,</span> <span class="n">mask_img</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">ss_img</span><span class="p">,</span> <span class="n">mask_img</span>
 
-<span class="c1"># Use try except to only accept as input nii file and ROBEX.sh</span>
+    <span class="k">def</span> <span class="nf">__nii_and_robex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Checks if we are providing the right inputs&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.nii&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.nii.gz&quot;</span><span class="p">)</span> <span class="ow">and</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;runROBEX.sh&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
@@ -102,40 +104,43 @@
 
         
         <span class="def">class</span>
-        <span class="name">SkullStripping</span>:
+        <span class="name">SkullStripping</span><wbr>(<span class="base"><a href="path.html#Path">preprocessing.path.Path</a></span>):
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SkullStripping</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span><span class="k">class</span> <span class="nc">SkullStripping</span><span class="p">(</span><span class="n">Path</span><span class="p">):</span>
     <span class="sd">&quot;&quot;&quot;</span>
-<span class="sd">    Skull stripping with ROBEX tool - https://www.nitrc.org/projects/robex.</span>
+<span class="sd">    Skull stripping using ROBEX tool - https://www.nitrc.org/projects/robex</span>
 <span class="sd">    &quot;&quot;&quot;</span>
 
-    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">robex_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">robex_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes a skull stripping object, where `img_path` is the path to the NIfTI image,</span>
 <span class="sd">        and `robex_path` is the path to the file runROBEX.sh</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">img_path</span> <span class="o">=</span> <span class="n">img_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">img</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span> <span class="o">=</span> <span class="n">robex_path</span>
 
-    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Start skull stripping process&quot;&quot;&quot;</span>
-        <span class="n">path_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">)</span>
-        <span class="c1">#: Get path without the filename</span>
-        <span class="n">img_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">)</span>
-        <span class="c1">#: Extract filename from the path</span>
-        <span class="n">img_out</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ss_&quot;</span> <span class="o">+</span> <span class="n">img_name</span>
-        <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_name</span><span class="p">,</span> <span class="n">img_out</span><span class="p">)</span>
-        <span class="n">img_mask_out</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mask_&quot;</span> <span class="o">+</span> <span class="n">img_name</span>
-        <span class="n">img_mask_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_name</span><span class="p">,</span> <span class="n">img_mask_out</span><span class="p">)</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">,</span> <span class="n">img_path</span><span class="p">,</span> <span class="n">img_mask_path</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nii_and_robex</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The parameters you provided are incorrect. The image must be in a .nii or .nii.gz &quot;</span>
+                             <span class="s2">&quot;format. Also, make sure the ROBEX file is runROBEX.sh&quot;</span><span class="p">)</span>
+        <span class="n">ss_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;ss_&quot;</span><span class="p">)</span>
+        <span class="n">mask_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;mask_&quot;</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="n">ss_img</span><span class="p">,</span> <span class="n">mask_img</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">ss_img</span><span class="p">,</span> <span class="n">mask_img</span>
+
+    <span class="k">def</span> <span class="nf">__nii_and_robex</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="nb">bool</span><span class="p">:</span>
+        <span class="sd">&quot;&quot;&quot;Checks if we are providing the right inputs&quot;&quot;&quot;</span>
+        <span class="k">return</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.nii&quot;</span><span class="p">)</span> <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;.nii.gz&quot;</span><span class="p">)</span> <span class="ow">and</span> \
+            <span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span><span class="o">.</span><span class="n">endswith</span><span class="p">(</span><span class="s2">&quot;runROBEX.sh&quot;</span><span class="p">)</span>
 </pre></div>
 
         </details>
 
-            <div class="docstring"><p>Skull stripping with ROBEX tool - https://www.nitrc.org/projects/robex.</p>
+            <div class="docstring"><p>Skull stripping using ROBEX tool - https://www.nitrc.org/projects/robex</p>
 </div>
 
 
@@ -143,17 +148,17 @@
                                         <div class="attr function"><a class="headerlink" href="#SkullStripping.__init__">#&nbsp;&nbsp</a>
 
         
-            <span class="name">SkullStripping</span><span class="signature">(img_path: str, robex_path: str)</span>
+            <span class="name">SkullStripping</span><span class="signature">(img: str, robex_path: str)</span>
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">robex_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">img</span><span class="p">:</span> <span class="nb">str</span><span class="p">,</span> <span class="n">robex_path</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
         <span class="sd">&quot;&quot;&quot;</span>
 <span class="sd">        Initializes a skull stripping object, where `img_path` is the path to the NIfTI image,</span>
 <span class="sd">        and `robex_path` is the path to the file runROBEX.sh</span>
 <span class="sd">        &quot;&quot;&quot;</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">img_path</span> <span class="o">=</span> <span class="n">img_path</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">img</span> <span class="o">=</span> <span class="n">img</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span> <span class="o">=</span> <span class="n">robex_path</span>
 </pre></div>
 
@@ -165,27 +170,25 @@ and <code>robex_path</code> is the path to the file runROBEX.sh</p>
 
 
                             </div>
-                            <div id="SkullStripping.start" class="classattr">
-                                        <div class="attr function"><a class="headerlink" href="#SkullStripping.start">#&nbsp;&nbsp</a>
+                            <div id="SkullStripping.output" class="classattr">
+                                        <div class="attr function"><a class="headerlink" href="#SkullStripping.output">#&nbsp;&nbsp</a>
 
         
             <span class="def">def</span>
-            <span class="name">start</span><span class="signature">(self) -&gt; None</span>:
+            <span class="name">output</span><span class="signature">(self) -&gt; Tuple[str, str]</span>:
     </div>
 
                 <details>
             <summary>View Source</summary>
-            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">start</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="kc">None</span><span class="p">:</span>
+            <div class="codehilite"><pre><span></span>    <span class="k">def</span> <span class="nf">output</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">-&gt;</span> <span class="n">Tuple</span><span class="p">[</span><span class="nb">str</span><span class="p">,</span> <span class="nb">str</span><span class="p">]:</span>
         <span class="sd">&quot;&quot;&quot;Start skull stripping process&quot;&quot;&quot;</span>
-        <span class="n">path_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">dirname</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">)</span>
-        <span class="c1">#: Get path without the filename</span>
-        <span class="n">img_name</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">basename</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">)</span>
-        <span class="c1">#: Extract filename from the path</span>
-        <span class="n">img_out</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;ss_&quot;</span> <span class="o">+</span> <span class="n">img_name</span>
-        <span class="n">img_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_name</span><span class="p">,</span> <span class="n">img_out</span><span class="p">)</span>
-        <span class="n">img_mask_out</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="s2">&quot;mask_&quot;</span> <span class="o">+</span> <span class="n">img_name</span>
-        <span class="n">img_mask_path</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">os</span><span class="o">.</span><span class="n">path</span><span class="o">.</span><span class="n">join</span><span class="p">(</span><span class="n">path_name</span><span class="p">,</span> <span class="n">img_mask_out</span><span class="p">)</span>
-        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img_path</span><span class="p">,</span> <span class="n">img_path</span><span class="p">,</span> <span class="n">img_mask_path</span><span class="p">])</span>
+        <span class="k">if</span> <span class="ow">not</span> <span class="bp">self</span><span class="o">.</span><span class="n">__nii_and_robex</span><span class="p">():</span>
+            <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;The parameters you provided are incorrect. The image must be in a .nii or .nii.gz &quot;</span>
+                             <span class="s2">&quot;format. Also, make sure the ROBEX file is runROBEX.sh&quot;</span><span class="p">)</span>
+        <span class="n">ss_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;ss_&quot;</span><span class="p">)</span>
+        <span class="n">mask_img</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">_output_img</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="s2">&quot;mask_&quot;</span><span class="p">)</span>
+        <span class="n">subprocess</span><span class="o">.</span><span class="n">call</span><span class="p">([</span><span class="bp">self</span><span class="o">.</span><span class="n">robex_path</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">img</span><span class="p">,</span> <span class="n">ss_img</span><span class="p">,</span> <span class="n">mask_img</span><span class="p">])</span>
+        <span class="k">return</span> <span class="n">ss_img</span><span class="p">,</span> <span class="n">mask_img</span>
 </pre></div>
 
         </details>
