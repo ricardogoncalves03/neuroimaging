@@ -8,8 +8,8 @@ class Registration(Path):
     Class to register two NIfTI images, producing a rigid registration which is going to be improved by an
     affine registration order 0. Tool used is SimpleElastix (https://simpleelastix.github.io/)
     """
-    TEMP_IMG = "r_temp.nii"
-    elastix_image_filter = sitk.ElastixImageFilter()
+    __TEMP_IMG = "r_temp.nii"
+    __elastix_image_filter = sitk.ElastixImageFilter()
 
     def __init__(self, fixed_img: str, moving_img: str):
         """
@@ -21,45 +21,44 @@ class Registration(Path):
 
     def start(self) -> None:
         """Start registration process with both rigid and affine"""
-        self.rigid_registration()
-        self.affine_registration()
-        os.remove(Registration.TEMP_IMG)  # Remove temporary files
-        os.remove("TransformParameters.0.txt")  # Remove unnecessary files
-
-    def rigid_registration(self) -> None:
-        """
-        Rigid registration.
-        """
-        if not self.is_img_nii():
-            raise ValueError("The parameters you provided are incorrect. The images must be in a .nii or .nii.gz "
-                             "format.")
-        Registration.elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
-        Registration.elastix_image_filter.SetMovingImage(sitk.ReadImage(self.moving_img))
-        Registration.elastix_image_filter.SetParameterMap(sitk.GetDefaultParameterMap("rigid"))
-        Registration.elastix_image_filter.Execute()
-        sitk.WriteImage(Registration.elastix_image_filter.GetResultImage(), Registration.TEMP_IMG)
-
-    def affine_registration(self) -> None:
-        """
-        Affine registration. Must be used after the rigid registration to improve results.
-        """
-        Registration.elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
-        Registration.elastix_image_filter.SetMovingImage(sitk.ReadImage(Registration.TEMP_IMG))
-        transformation_map = sitk.GetDefaultParameterMap("affine")
-        transformation_map['FinalBSplineInterpolationOrder'] = ['0']
-        Registration.elastix_image_filter.SetParameterMap(transformation_map)
-        Registration.elastix_image_filter.Execute()
+        self.__rigid_registration()
+        self._affine_registration()
+        self.__remove_files()
 
     def output(self) -> any:
         """Image output"""
-        return self.output_img(self.moving_img, "r")
+        return self._output_img(self.moving_img, "r")
+
+    def __rigid_registration(self) -> None:
+        """
+        Rigid registration.
+        """
+        if not self.__is_img_nii():
+            raise ValueError("The parameters you provided are incorrect. The images must be in a .nii or .nii.gz "
+                             "format.")
+        Registration.__elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
+        Registration.__elastix_image_filter.SetMovingImage(sitk.ReadImage(self.moving_img))
+        Registration.__elastix_image_filter.SetParameterMap(sitk.GetDefaultParameterMap("rigid"))
+        Registration.__elastix_image_filter.Execute()
+        sitk.WriteImage(Registration.__elastix_image_filter.GetResultImage(), Registration.__TEMP_IMG)
+
+    def _affine_registration(self) -> None:
+        """
+        Affine registration. Must be used after the rigid registration to improve results.
+        """
+        Registration.__elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
+        Registration.__elastix_image_filter.SetMovingImage(sitk.ReadImage(Registration.__TEMP_IMG))
+        transformation_map = sitk.GetDefaultParameterMap("affine")
+        transformation_map['FinalBSplineInterpolationOrder'] = ['0']
+        Registration.__elastix_image_filter.SetParameterMap(transformation_map)
+        Registration.__elastix_image_filter.Execute()
 
     @staticmethod
-    def remove_files() -> None:
+    def __remove_files() -> None:
         """Delete temporary and unnecessary files"""
-        os.remove(Registration.TEMP_IMG)
+        os.remove(Registration.__TEMP_IMG)
         os.remove("TransformParameters.0.txt")
 
-    def is_img_nii(self) -> bool:
+    def __is_img_nii(self) -> bool:
         return self.fixed_img.endswith(".nii") or self.fixed_img.endswith(".nii.gz") and \
                self.moving_img.endswith(".nii") or self.moving_img.endswith(".nii.gz")

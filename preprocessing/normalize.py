@@ -7,10 +7,11 @@ from skimage.measure import label, regionprops
 from preprocessing.path import Path
 
 
-class Normalization(Path):
+class Normalize(Path):
     """Class to normalize NIfTI images according to Qtim deep learning tutorial.
      Results will have 0 mean, min intensity of around -2 and max intensity of around 2
      """
+
     def __init__(self, img: str):
         """
         Initializes a normalization object, where `img` is the img to be normalized,
@@ -18,28 +19,13 @@ class Normalization(Path):
         is the image matrix info
         """
         self.img = img
-        self.nii = nib.load(self.img)
-        self.nii_matrix = self.nii.get_data()
 
-    def start(self) -> None:
-        """Start loading nii and masking it"""
-        self.load_nii()
-        self.masked_nii() 
+    def _start(self):
+        nii = nib.load(self.img)
+        nii_matrix = nii.get_data()
+        nii_copy = np.copy(nii_matrix)
 
-    def output(self) -> any:
-        """Normalized img output"""
-        self.nii_matrix[:, :, :] = self.masked_nii()
-        return self.nii.to_filename(self._output_img(self.img, "norm_"))  # saving resulting nifti
-
-    def load_nii(self) -> ndarray:
-        """Make a copy of `nii_matrix`, to safely work in nii_copy matrix"""
-        nii_copy = np.copy(self.nii_matrix)
-        print("creating a copy")
-        return nii_copy
-
-    def masked_nii(self) -> MaskedArray:
-        """To be commented"""
-        label_image = label(self.load_nii() == 0)
+        label_image = label(nii_copy)
         largest_label, largest_area = None, 0
         for region in regionprops(label_image):
             if region.area > largest_area:
@@ -47,14 +33,11 @@ class Normalization(Path):
                 largest_label = region.label
 
         mask = label_image == largest_label
-        masked_nii = np.ma.masked_where(mask, self.load_nii())
+        masked_nii = np.ma.masked_where(mask, nii_copy)
         masked_nii = masked_nii - np.mean(masked_nii)
         masked_nii = masked_nii / np.std(masked_nii)
         masked_nii = np.ma.getdata(masked_nii)
 
-        self.nii_matrix[:, :, :] = masked_nii
+        nii_matrix[:, :, :] = masked_nii
 
-        print("masked_nii")
-        return masked_nii
-
-
+        nii.to_filename(self._output_img(self.img, "norm_"))

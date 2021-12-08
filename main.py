@@ -1,7 +1,7 @@
 from preprocessing.n4_correction import N4Correction
 # from preprocessing.registration import Registration
 from preprocessing.skull_stripping import SkullStripping
-from preprocessing.normalization import Normalization
+from preprocessing.normalize import Normalize
 
 
 def main():
@@ -15,7 +15,7 @@ def main():
     registration.start()
     registered_img_flair = registration.output()
     ###
-    ### Skull stripping module working
+    ### Skull stripping
     img_flair = registered_img_flair
     robex = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_ss/ROBEXv12.linux64/ROBEX/runROBEX.sh"
     ss = SkullStripping(img, robex)
@@ -31,9 +31,6 @@ def main():
 """
     img = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_normalization/a012/flair.nii.gz"
     img_ss = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_ss/a012/ss_flair.nii.gz"
-    norm = Normalization(img_ss)
-    norm.start()
-    # norm.output()
 
 
 if __name__ == '__main__':

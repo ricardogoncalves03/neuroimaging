@@ -19,15 +19,15 @@ class N4Correction(Path):
 
     def output(self) -> any:
         """Image output"""
-        tup = self.cast(self.img, self.mask)
+        tup = self.__cast(self.img, self.mask)
         img = tup[0]
         mask = tup[1]
         print("Applying N4 Bias Field Correction. This process can take a while")
         n4_img = sitk.N4BiasFieldCorrection(img, mask)
         print("**N4 applied successfully**")
-        return sitk.WriteImage(n4_img, self.output_img(self.img, "n4_"))
+        return sitk.WriteImage(n4_img, self._output_img(self.img, "n4_"))
 
-    def cast(self, read_img: str, read_mask: str) -> Tuple[any, any]:
+    def __cast(self, read_img: str, read_mask: str) -> Tuple[any, any]:
         """
         Read and cast images to the right format
         """

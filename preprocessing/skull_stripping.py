@@ -22,7 +22,7 @@ class SkullStripping(Path):
                 and self.robex_path.endswith("runROBEX.sh")):
             raise ValueError("The parameters you provided are incorrect. The image must be in a .nii or .nii.gz "
                              "format. Also, make sure the ROBEX file is runROBEX.sh")
-        ss_img = self.output_img(self.img, "ss_")
-        mask_img = self.output_img(self.img, "mask_")
+        ss_img = self._output_img(self.img, "ss_")
+        mask_img = self._output_img(self.img, "mask_")
         subprocess.call([self.robex_path, self.img, ss_img, mask_img])
         return ss_img, mask_img
