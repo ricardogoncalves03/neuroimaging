@@ -52,6 +52,8 @@ class Registration(Path):
         transformation_map['FinalBSplineInterpolationOrder'] = ['0']
         Registration.__elastix_image_filter.SetParameterMap(transformation_map)
         Registration.__elastix_image_filter.Execute()
+        img_out = self._output_img(self.moving_img, "r")
+        sitk.WriteImage(Registration.__elastix_image_filter.GetResultImage(), img_out)
 
     @staticmethod
     def __remove_files() -> None:

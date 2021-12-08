@@ -26,24 +26,26 @@ class Normalization(Path):
     def start(self) -> None:
         """Start loading nii and masking it"""
         self.__load_nii()
-        print(self.__masked_nii())
+        self.__masked_nii()
 
     def output(self) -> str:
         """Normalized img output"""
         self.__nii_matrix[:, :, :] = self.__masked_nii()
         norm_out = self._output_img(self.img, "norm_")
         self.__nii.to_filename(norm_out)  # saving resulting nifti
+        print("Cheers! {0} is now normalized".format(self.img))
         return norm_out
 
     def __load_nii(self) -> ndarray:
         """Make a copy of `nii_matrix`, to safely work on nii_copy matrix"""
+        print("{0}loaded. Making a copy of its matrix".format(self.img))
         nii_copy = np.copy(self.__nii_matrix)
-        print("creating a copy")
+        print("Copy created")
         return nii_copy
 
     def __masked_nii(self) -> MaskedArray:
         """Normalization process"""
-        print(self.__load_nii())
+        print("Starting normalization process")
         label_image = label(self.__load_nii() == 0)
         largest_label, largest_area = None, 0
         for region in regionprops(label_image):
@@ -55,6 +57,7 @@ class Normalization(Path):
         masked_nii = masked_nii - np.mean(masked_nii)
         masked_nii = masked_nii / np.std(masked_nii)
         masked_nii = np.ma.getdata(masked_nii)
+        print("Normalization process finished")
         return masked_nii
 
     def __img_is_nii(self) -> bool:
