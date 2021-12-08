@@ -1,11 +1,21 @@
 from preprocessing.n4_correction import N4Correction
 # from preprocessing.registration import Registration
 from preprocessing.skull_stripping import SkullStripping
-from preprocessing.normalize import Normalize
+from preprocessing.normalization import Normalization
 
 
 def main():
     # -----------------PREPROCESSING EXAMPLE FOR flair.nii.gz----------------- #
+
+    ### Skull stripping
+    img_flair = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_ss/a012/flair.nii.gz"
+    robex = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_ss/ROBEXv12.linux64/ROBEX/runROBEX.sh"
+    ss = SkullStripping(img_flair, robex)
+    img_tup = ss.output()
+    ss_flair = img_tup[0]
+    ss_flair_mask = img_tup[1]
+    print(ss_flair, ss_flair_mask)
+
 
     """
     ### ************Made some changes to registration module - needs to be tested again on server
@@ -28,9 +38,13 @@ def main():
     n4.cast()
     n4_flair = n4.output()
     ###
-"""
-    img = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_normalization/a012/flair.nii.gz"
-    img_ss = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_ss/a012/ss_flair.nii.gz"
+    """
+
+    ### Normalization not working
+    #img = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_normalization/a012/flair.nii.gz"
+    #img_ss = "/home/ricardo/Documents/neuroimaging-tests/preprocessing/test_ss/a012/ss_flair.nii.gz"
+    #norm = Normalization(img_ss)
+    #norm.start()
 
 
 if __name__ == '__main__':

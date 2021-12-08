@@ -22,10 +22,10 @@ class Registration(Path):
     def start(self) -> None:
         """Start registration process with both rigid and affine"""
         self.__rigid_registration()
-        self._affine_registration()
+        self.__affine_registration()
         self.__remove_files()
 
-    def output(self) -> any:
+    def output(self) -> str:
         """Image output"""
         return self._output_img(self.moving_img, "r")
 
@@ -33,7 +33,7 @@ class Registration(Path):
         """
         Rigid registration.
         """
-        if not self.__is_img_nii():
+        if not self.__img_is_nii():
             raise ValueError("The parameters you provided are incorrect. The images must be in a .nii or .nii.gz "
                              "format.")
         Registration.__elastix_image_filter.SetFixedImage(sitk.ReadImage(self.fixed_img))
@@ -42,7 +42,7 @@ class Registration(Path):
         Registration.__elastix_image_filter.Execute()
         sitk.WriteImage(Registration.__elastix_image_filter.GetResultImage(), Registration.__TEMP_IMG)
 
-    def _affine_registration(self) -> None:
+    def __affine_registration(self) -> None:
         """
         Affine registration. Must be used after the rigid registration to improve results.
         """
@@ -59,6 +59,6 @@ class Registration(Path):
         os.remove(Registration.__TEMP_IMG)
         os.remove("TransformParameters.0.txt")
 
-    def __is_img_nii(self) -> bool:
+    def __img_is_nii(self) -> bool:
         return self.fixed_img.endswith(".nii") or self.fixed_img.endswith(".nii.gz") and \
                self.moving_img.endswith(".nii") or self.moving_img.endswith(".nii.gz")
