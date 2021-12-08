@@ -5,7 +5,7 @@ from preprocessing.normalization import Normalization
 
 
 def main():
-    # -----------------PREPROCESSING EXAMPLE FOR flair.nii.gz----------------- #
+    # -----------------PREPROCESSING EXAMPLE FOR a single flair.nii.gz----------------- #
 
     # Registration
     fixed_img = "/PATH/t1.nii.gz"
