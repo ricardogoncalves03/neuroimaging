@@ -4,19 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="cdaa7a91-d4f3-4139-bc54-52557d426d9d" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing/n4_correction.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing/normalization.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing/registration.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/preprocessing/skull_stripping.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/documentation/index.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/documentation/n4_correction.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/documentation/normalization.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/documentation/path.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/documentation/registration.html" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/resources/documentation/skull_stripping.html" beforeDir="false" />
-    </list>
+    <list default="true" id="cdaa7a91-d4f3-4139-bc54-52557d426d9d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
