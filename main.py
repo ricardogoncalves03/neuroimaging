@@ -1,7 +1,4 @@
-from preprocessing.utils import N4Correction
-from preprocessing.utils import Registration
-from preprocessing.utils import SkullStripping
-from preprocessing.utils import Normalization
+from preprocessing.utils import N4Correction, Registration, SkullStripping, Normalization
 
 
 def main():
